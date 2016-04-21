@@ -604,60 +604,66 @@ angular.module("proton.controllers.Compose", ["proton.constants"])
     };
 
     $scope.composerStyle = function() {
-        var composers = $('.composer');
-        var composerWidth = $('.composer').eq(0).outerWidth();
+        
+        var composers = $('.composer'),
+            environment = function() {
+                
+                var set = {};
+                set.composerWidth   = composers.eq(0).outerWidth();
+                set.margin          = ($('html').hasClass('ua-windows_nt')) ? 40 : 20;
+                set.windowWidth     = $('body').outerWidth();
+                set.messagesCount   = $scope.messages.length;
+                set.isBootstrap     = (tools.findBootstrapEnvironment() === 'xs') ? true : false;
+
+                if(!set.isBootstrap && ((set.windowWidth / set.messagesCount) < set.composerWidth) ){
+                /* 
+                overlap is a ratio that will share the space available between overlayed composers. 
+                */
+                   set.overlap = ( (set.windowWidth - set.composerWidth - (2*set.margin)) / (set.messagesCount-1) );                
+                }
+
+                return set;
+            },
+            context = environment();
+
 
         _.each(composers, function(composer, index) {
 
-            var margin = 20;
-            var reverseIndex = $scope.messages.length - index;
-            var message = $scope.messages[index];
-            var styles = {};
-            var widthWindow = $('body').outerWidth();
-            var windowHeight = $(window).height() - margin;
-            var composerHeight = $(composer).outerHeight();
+            var styles = { opacity: 1 };
 
-            if ($('html').hasClass('ua-windows_nt')) {
-                margin = 40;
-            }
+            if (this.isBootstrap) {
 
-            if (tools.findBootstrapEnvironment() === 'xs') {
-                var marginTop = 80; // px
-                var top = marginTop;
-
+                var top = 80; // px
                 styles.top = top + 'px';
-            } else {
-                var marginRight = margin; // px
-                var widthComposer = composerWidth; // px
 
-                if (Math.ceil(widthWindow / $scope.messages.length) > (widthComposer + marginRight)) {
-                    right = (index * (widthComposer + marginRight)) + marginRight;
-                } else {
-                    widthWindow -= margin; // margin left
-                    var overlap = (((widthComposer * $scope.messages.length) - widthWindow) / ($scope.messages.length - 1));
-                    right = index * (widthComposer - ( overlap + margin ));
+            }else{
+                    
+                var c = this,
+                    messagesCount = c.messagesCount,
+                    margin = c.margin,
+                    isCurrent = ((messagesCount - index) === messagesCount) ? true : false;
+
+                if (isCurrent) {
+                // set the current composer to front right
+                    styles.right = margin;
+                
+                }else{
+
+                    var composerWidth = c.composerWidth,
+                        windowWidth = c.windowWidth,
+                        innerWindow = c.innerWindow,
+                        overlap = c.overlap;
+                        
+                        /* set styles */
+                        styles.right =  (overlap) ? (index*overlap) :  (index * (composerWidth) + (2*margin)),
+                        styles.top = '';  
                 }
 
-                if (reverseIndex === $scope.messages.length) {
-                    right = marginRight;
-                    index = $scope.messages.length;
-                }
-
-                styles.top = '';
-                styles.right = right + 'px';
-                styles.opacity = 1;
             }
-
-            // Height - depreciated. pure css solution - Jason
-            // if(windowHeight < composerHeight) {
-                // styles.height = windowHeight + 'px';
-            // } else {
-                // styles.height = 'auto';
-            // }
 
             $(composer).css(styles);
 
-        });
+        }, context);
     };
 
     /**
