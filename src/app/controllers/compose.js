@@ -609,6 +609,8 @@ angular.module("proton.controllers.Compose", ["proton.constants"])
         var composers = $('.composer'),
             environment = function() {
                 
+                if(composers.lenght === 0){ return; }
+
                 var set = {};
 
                 set.composerWidth   = composers.eq(0).outerWidth();
