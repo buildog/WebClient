@@ -609,7 +609,7 @@ angular.module("proton.controllers.Compose", ["proton.constants"])
         var composers = $('.composer'),
             environment = function() {
                 
-                if(composers.lenght === 0){ return; }
+                if(!composers){ return; }
 
                 var set = {};
 
