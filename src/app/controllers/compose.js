@@ -670,7 +670,9 @@ angular.module("proton.controllers.Compose", ["proton.constants"])
             }
 
             /* Set the new styles */
-            $(composer).css(styles);
+            $timeout(function() {
+                $(composer).css(styles);
+            },250);
 
         }, context);
     };
