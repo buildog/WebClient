@@ -579,7 +579,7 @@ angular.module("proton.controllers.Compose", ["proton.constants"])
 
         // This timeout is really important to load the structure of Squire
         $timeout(function() {
-            $rootScope.$broadcast('squireHeightChanged');
+            // $rootScope.$broadcast('squireHeightChanged'); /* depreciated */
             $scope.composerStyle();
             // forward case: we need to save to get the attachments
             if(save === true) {
@@ -1592,13 +1592,14 @@ angular.module("proton.controllers.Compose", ["proton.constants"])
      */
     $scope.focusTo = function(message) {
         message.fields = true;
-        $rootScope.$broadcast('squireHeightChanged');
         
+        //$rootScope.$broadcast('squireHeightChanged'); /* depreciated */
         // $scope.composerStyle(); /* depreciated */
         // Focus input
+        
         $timeout(function() {
             $('#uid' + message.uid + ' .toRow input.new-value-email').focus();
-        });
+        }, 250);
     };
 
     $scope.focusNextInput = function(event) {
