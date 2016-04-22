@@ -622,7 +622,7 @@ angular.module("proton.controllers.Compose", ["proton.constants"])
                 /*
                 Is the available space enough ?
                 */
-                if(!set.isBootstrap && ((set.windowWidth / set.messagesCount) < set.composerWidth) ){
+                if(!set.isBootstrap && ((set.windowWidth / set.messagesCount) < (set.composerWidth + set.margin)) ){
                 /* 
                 overlap is a ratio that will share equaly the space 
                 available between overlayed composers. 
@@ -665,7 +665,7 @@ angular.module("proton.controllers.Compose", ["proton.constants"])
                         overlap = c.overlap;
                         
                         /* */
-                        styles.right =  (overlap) ? (index*overlap) :  (index * (composerWidth) + (2*margin)),
+                        styles.right =  (overlap) ? (index*overlap) :  ((index * (composerWidth+margin)) + margin),
                         styles.top = '';  
                 }
 
