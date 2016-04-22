@@ -467,7 +467,8 @@ angular.module("proton.controllers.Compose", ["proton.constants"])
         message.Attachments.push(tempPacket);
         message.attachmentsToggle = true;
 
-        $scope.composerStyle();
+        // $scope.composerStyle(); /*depreciated*/
+
         $rootScope.$broadcast('composerModeChange');
 
         var cleanup = function( result ) {
@@ -609,21 +610,28 @@ angular.module("proton.controllers.Compose", ["proton.constants"])
             environment = function() {
                 
                 var set = {};
+
                 set.composerWidth   = composers.eq(0).outerWidth();
                 set.margin          = ($('html').hasClass('ua-windows_nt')) ? 40 : 20;
                 set.windowWidth     = $('body').outerWidth();
                 set.messagesCount   = $scope.messages.length;
                 set.isBootstrap     = (tools.findBootstrapEnvironment() === 'xs') ? true : false;
 
+                /*
+                Is the available space enough ?
+                */
                 if(!set.isBootstrap && ((set.windowWidth / set.messagesCount) < set.composerWidth) ){
                 /* 
-                overlap is a ratio that will share the space available between overlayed composers. 
+                overlap is a ratio that will share equaly the space 
+                available between overlayed composers. 
                 */
                    set.overlap = ( (set.windowWidth - set.composerWidth - (2*set.margin)) / (set.messagesCount-1) );                
                 }
 
                 return set;
             },
+
+            /* used as _ context */
             context = environment();
 
 
@@ -637,14 +645,14 @@ angular.module("proton.controllers.Compose", ["proton.constants"])
                 styles.top = top + 'px';
 
             }else{
-                    
+                
                 var c = this,
                     messagesCount = c.messagesCount,
                     margin = c.margin,
                     isCurrent = ((messagesCount - index) === messagesCount) ? true : false;
 
                 if (isCurrent) {
-                // set the current composer to front right
+                    // set the current composer to right : margin
                     styles.right = margin;
                 
                 }else{
@@ -654,13 +662,14 @@ angular.module("proton.controllers.Compose", ["proton.constants"])
                         innerWindow = c.innerWindow,
                         overlap = c.overlap;
                         
-                        /* set styles */
+                        /* */
                         styles.right =  (overlap) ? (index*overlap) :  (index * (composerWidth) + (2*margin)),
                         styles.top = '';  
                 }
 
             }
 
+            /* Set the new styles */
             $(composer).css(styles);
 
         }, context);
@@ -806,7 +815,7 @@ angular.module("proton.controllers.Compose", ["proton.constants"])
             message.fields = true;
         }
 
-        $scope.composerStyle();
+        // $scope.composerStyle(); /*depreciated*/
     };
 
     $scope.showFields = function(message) {
@@ -1584,7 +1593,8 @@ angular.module("proton.controllers.Compose", ["proton.constants"])
     $scope.focusTo = function(message) {
         message.fields = true;
         $rootScope.$broadcast('squireHeightChanged');
-        $scope.composerStyle();
+        
+        // $scope.composerStyle(); /* depreciated */
         // Focus input
         $timeout(function() {
             $('#uid' + message.uid + ' .toRow input.new-value-email').focus();
